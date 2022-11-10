@@ -3,3 +3,11 @@
   right: 17px;
   cursor: pointer;
 }
+
+a.nav-link {
+  color: #000;
+}
+
+a.nav-link.active {
+  color: #0d6efd;
+}

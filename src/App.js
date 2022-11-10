@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from "react";
 import Card from "./components/Card";
 import { storage } from "./utils";
@@ -13,6 +14,8 @@ function App() {
   const [launchesList, setLaunchesList] = useState([]);
 
   const [favorites, setFavorites] = useState(favorites_launches);
+
+  const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {
     //fetching data
@@ -78,33 +81,93 @@ function App() {
         </div>
       </header>
       <div className="container">
-        {!launchesList.length ? (
-          <div className="d-flex p-3 bd-highlight justify-content-center">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
+        <div className="row">
+          <div className="col">Launches</div>
+        </div>
+        <div>
+          <nav className="nav">
+            <a
+              onClick={() => setShowFavorites(false)}
+              className={`nav-link ${!showFavorites ? "active" : ""}`}
+            >
+              All
+            </a>
+            <a
+              className={`nav-link ${showFavorites ? "active" : ""}`}
+              onClick={() => setShowFavorites(true)}
+            >
+              favourites
+            </a>
+          </nav>
+        </div>
+
+        {showFavorites ? (
+          <div>
+            {!launchesList.length ? (
+              <div className="d-flex p-3 bd-highlight justify-content-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <div className="row">
+                {launchesList
+                  .filter((launch) => {
+                    return launch.rocket.is_favorite;
+                  })
+                  .map((launch) => {
+                    return (
+                      <div
+                        className="col"
+                        key={launch.launch_date_utc + launch.flight_number}
+                      >
+                        <Card
+                          flight_number={launch.flight_number}
+                          {...launch.rocket}
+                          onClickSetFavorite={() => {
+                            addFavoriteLaunche(launch.flight_number);
+                          }}
+                          onClickRemoveFavorite={() => {
+                            removeFavoriteLaunche(launch.flight_number);
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
           </div>
         ) : (
-          <div className="row">
-            {launchesList.map((launch) => {
-              return (
-                <div
-                  className="col"
-                  key={launch.launch_date_utc + launch.flight_number}
-                >
-                  <Card
-                    flight_number={launch.flight_number}
-                    {...launch.rocket}
-                    onClickSetFavorite={() => {
-                      addFavoriteLaunche(launch.flight_number);
-                    }}
-                    onClickRemoveFavorite={() => {
-                      removeFavoriteLaunche(launch.flight_number);
-                    }}
-                  />
+          <div>
+            {!launchesList.length ? (
+              <div className="d-flex p-3 bd-highlight justify-content-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
                 </div>
-              );
-            })}
+              </div>
+            ) : (
+              <div className="row">
+                {launchesList.map((launch) => {
+                  return (
+                    <div
+                      className="col"
+                      key={launch.launch_date_utc + launch.flight_number}
+                    >
+                      <Card
+                        flight_number={launch.flight_number}
+                        {...launch.rocket}
+                        onClickSetFavorite={() => {
+                          addFavoriteLaunche(launch.flight_number);
+                        }}
+                        onClickRemoveFavorite={() => {
+                          removeFavoriteLaunche(launch.flight_number);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </div>
