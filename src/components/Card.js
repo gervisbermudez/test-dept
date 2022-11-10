@@ -1,15 +1,17 @@
 import React from "react";
 
-export default function Card({
-  rocket_name,
-  description,
-  first_flight,
-  flickr_images,
-  is_favorite,
-  flight_number,
-  onClickSetFavorite,
-  onClickRemoveFavorite,
-}) {
+export default function Card(props) {
+  const {
+    rocket_name,
+    description,
+    first_flight,
+    flickr_images,
+    is_favorite,
+    flight_number,
+    onClickSetFavorite,
+    onClickRemoveFavorite,
+    onClickShowDetails,
+  } = props;
   const cardImageUrl = flickr_images.length
     ? flickr_images[0]
     : "/img/default.jpg";
@@ -31,6 +33,16 @@ export default function Card({
             }}
           ></i>
         )}
+        <div>
+          <button
+            onClick={() => {
+              onClickShowDetails(props);
+            }}
+            className="btn btn-primary"
+          >
+            Show Details
+          </button>
+        </div>
       </div>
     </div>
   );
