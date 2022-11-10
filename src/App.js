@@ -17,6 +17,8 @@ function App() {
 
   const [showFavorites, setShowFavorites] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     //fetching data
     fetch(launches_api_url)
@@ -72,7 +74,15 @@ function App() {
     setFavorites([...favorites]);
     storage.set("favorites_launches", [...favorites]);
   };
+  let filteredLaunchesList = [...launchesList];
 
+  if (searchTerm.length) {
+    filteredLaunchesList = filteredLaunchesList.filter((launch) => {
+      return launch.mission_name.indexOf(searchTerm) !== -1;
+    });
+  }
+
+  console.log({ filteredLaunchesList });
   return (
     <div className="App">
       <header>
@@ -83,6 +93,26 @@ function App() {
       <div className="container">
         <div className="row">
           <div className="col">Launches</div>
+          <div>
+            <div className="input-group flex-nowrap">
+              <span className="input-group-text" id="addon-wrapping">
+                @
+              </span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search"
+                aria-label="Search"
+                aria-describedby="addon-wrapping"
+                value={searchTerm}
+                onChange={({ target }) => {
+                  target.value
+                    ? setSearchTerm(target.value)
+                    : setSearchTerm("");
+                }}
+              />
+            </div>
+          </div>
         </div>
         <div>
           <nav className="nav">
@@ -103,7 +133,7 @@ function App() {
 
         {showFavorites ? (
           <div>
-            {!launchesList.length ? (
+            {!filteredLaunchesList.length ? (
               <div className="d-flex p-3 bd-highlight justify-content-center">
                 <div className="spinner-border" role="status">
                   <span className="visually-hidden">Loading...</span>
@@ -111,7 +141,7 @@ function App() {
               </div>
             ) : (
               <div className="row">
-                {launchesList
+                {filteredLaunchesList
                   .filter((launch) => {
                     return launch.rocket.is_favorite;
                   })
@@ -139,7 +169,7 @@ function App() {
           </div>
         ) : (
           <div>
-            {!launchesList.length ? (
+            {!filteredLaunchesList.length ? (
               <div className="d-flex p-3 bd-highlight justify-content-center">
                 <div className="spinner-border" role="status">
                   <span className="visually-hidden">Loading...</span>
@@ -147,7 +177,7 @@ function App() {
               </div>
             ) : (
               <div className="row">
-                {launchesList.map((launch) => {
+                {filteredLaunchesList.map((launch) => {
                   return (
                     <div
                       className="col"
