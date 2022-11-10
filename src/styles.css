@@ -1,0 +1,5 @@
+.card-body i.bi {
+  position: absolute;
+  right: 17px;
+  cursor: pointer;
+}
