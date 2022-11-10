@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Card from "./components/Card";
 
 const launches_api_url = "https://api.spacexdata.com/v3/launches";
 const rockets_api_url = "https://api.spacexdata.com/v3/rockets";
@@ -49,8 +50,28 @@ function App() {
 
   return (
     <div className="App">
-      <header>Hola</header>
-      <div className="container">{JSON.stringify(launchesList)}</div>
+      <header>
+        <div className="d-flex p-3 bd-highlight justify-content-center">
+          SpaceX
+        </div>
+      </header>
+      <div className="container">
+        {!launchesList.length ? (
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        ) : (
+          <div className="row">
+            {launchesList.map((launch) => {
+              return (
+                <div className="col" key={launch.rocket_id}>
+                  <Card {...launch.rocket} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
